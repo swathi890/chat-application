@@ -1,0 +1,29 @@
+const express = require("express");
+const cors = require("cors");
+const mongoose = require("mongoose");
+const app = express();
+require("dotenv").config();
+const userRouter = require("./routes/userRoutes");
+const messageRoute = require("./routes/messagesRoute");
+
+app.use(cors());
+app.use(express.json());
+
+app.use("/api/auth", userRouter);
+app.use("/api/messages", messageRoute);
+
+mongoose
+  .connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("DB connection successfull");
+  })
+  .catch((err) => {
+    console.log(err.message);
+  });
+
+const server = app.listen(process.env.PORT, () => {
+  console.log(`server started on port ${process.env.PORT}`);
+});
